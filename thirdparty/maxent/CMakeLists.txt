@@ -20,20 +20,18 @@ check_include_file_concat ("sys/types.h" HAVE_SYS_TYPES_H)
 check_include_file_concat ("unistd.h" HAVE_UNISTD_H)
 
 check_library_exists_concat ("gnugetopt" getopt HAVE_LIBGNUGETOPT)
-check_library_exists_concat ("z" deflateEnd HAVE_LIBZ)
+check_library_exists_concat ("z" gzopen HAVE_LIBZ)
+message (STATUS "have libz " ${HAVE_LIBZ})
+
 if (NOT WINDOWS)
     check_library_exists_concat ("m" random HAVE_LIBM)
 endif (NOT WINDOWS)
 
-include (CMakeDetermineFortranCompiler)
-
-if (CMAKE_Fortran_COMPILER)
-    set (HAVE_FORTRAN   1)
-    enable_language (Fortran)
-endif (CMAKE_Fortran_COMPILER)
-
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
         ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+
+SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-DHAVE_CONFIG_H")
+message (STATUS "flags " ${CMAKE_CXX_FLAGS})
 
 # -----------------------------------------------
 # compiling section
@@ -61,6 +59,7 @@ set (maxent_lib_SRC
     ${OPT_FILES})
 
 add_library (maxent_lib ${maxent_lib_SRC})
+
 set_target_properties (maxent_lib PROPERTIES OUTPUT_NAME maxent)
 
 set (GETOPT_FILES "")
@@ -82,4 +81,4 @@ set_target_properties (maxent_exe
     PROPERTIES 
     OUTPUT_NAME maxent
     RUNTIME_OUTPUT_DIRECTORY  ${TOOLS_DIR}/train/)
-target_link_libraries (maxent_exe maxent_lib z m)
+target_link_libraries (maxent_exe maxent_lib z m gfortran)

@@ -20,6 +20,26 @@ set (CONFIGURE_DIR          ${PROJECT_SOURCE_DIR}/conf)
 set (MODEL_DIR              ${PROJECT_SOURCE_DIR}/ltp_data)
 set (DATA_DIR               ${PROJECT_SOURCE_DIR}/test_data)
 
+# -- global link library --
+include (ConfigureChecks)
+check_library_exists_concat ("z" gzopen HAVE_LIBZ)
+
+if (HAVE_LIBZ)
+    set (CMAKE_EXE_LINKER_FLAGS     "${CMAKE_EXE_LINKER_FLAGS} -lz")
+    set (CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -lz")
+    set (CMAKE_MODULE_LINKER_FLAGS  "${CMAKE_MODULE_LINKER_FLAGS} -lz")
+endif (HAVE_LIBZ)
+
+include (CMakeDetermineFortranCompiler)
+
+if (CMAKE_Fortran_COMPILER)
+    set (HAVE_FORTRAN   1)
+    enable_language (Fortran)
+    set (CMAKE_EXE_LINKER_FLAGS     "${CMAKE_EXE_LINKER_FLAGS} -lgfortran")
+    set (CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -lgfortran")
+    set (CMAKE_MODULE_LINKER_FLAGS  "${CMAKE_MODULE_LINKER_FLAGS} -lgfortran")
+endif (CMAKE_Fortran_COMPILER)
+
 # compiling section
 # -- compile shipped libraries
 add_subdirectory (thirdparty)
