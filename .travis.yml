@@ -6,6 +6,7 @@ compiler:
 
 before_install:
     - sudo apt-get install cmake
+    - sudo apt-get install gfortran g77
     - git submodule update --init --recursive
 
 script:
