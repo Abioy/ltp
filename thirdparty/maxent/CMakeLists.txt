@@ -20,7 +20,7 @@ check_include_file_concat ("sys/types.h" HAVE_SYS_TYPES_H)
 check_include_file_concat ("unistd.h" HAVE_UNISTD_H)
 
 check_library_exists_concat ("gnugetopt" getopt HAVE_LIBGNUGETOPT)
-check_library_exists_concat ("z" gzopen HAVE_LIBZ)
+#check_library_exists_concat ("z" gzopen HAVE_LIBZ)
 message (STATUS "have libz " ${HAVE_LIBZ})
 
 if (NOT WINDOWS)
@@ -30,8 +30,11 @@ endif (NOT WINDOWS)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
         ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 
-SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-DHAVE_CONFIG_H")
-message (STATUS "flags " ${CMAKE_CXX_FLAGS})
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_CONFIG_H")
+
+message (STATUS "cmake cxx flags "      ${CMAKE_CXX_FLAGS})
+message (STATUS "cmake linker flags "   ${CMAKE_EXE_LINKER_FLAGS})
+message (STATUS "global link flags "    ${GLOBAL_LINK_LIBRARIES})
 
 # -----------------------------------------------
 # compiling section
@@ -59,11 +62,10 @@ set (maxent_lib_SRC
     ${OPT_FILES})
 
 add_library (maxent_lib ${maxent_lib_SRC})
-
+target_link_libraries (maxent_lib ${GLOBAL_LINK_LIBRARIES})
 set_target_properties (maxent_lib PROPERTIES OUTPUT_NAME maxent)
 
 set (GETOPT_FILES "")
-
 if (WIN32 OR MINGW)
     set (GETOPT_FILES getopt.c getopt1.c)
 endif ()
@@ -75,10 +77,9 @@ set (maxent_exe_SRC
     f77_dummy_main.cpp
     ${GETOPT_FILES})
 
-
 add_executable (maxent_exe ${maxent_exe_SRC})
+target_link_libraries (maxent_exe maxent_lib ${GLOBAL_LINK_LIBRARIES})
 set_target_properties (maxent_exe 
     PROPERTIES 
     OUTPUT_NAME maxent
     RUNTIME_OUTPUT_DIRECTORY  ${TOOLS_DIR}/train/)
-target_link_libraries (maxent_exe maxent_lib z m gfortran)

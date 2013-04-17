@@ -24,10 +24,10 @@ set (DATA_DIR               ${PROJECT_SOURCE_DIR}/test_data)
 include (ConfigureChecks)
 check_library_exists_concat ("z" gzopen HAVE_LIBZ)
 
+set (GLOBAL_LINK_LIBRARIES pthread)
+
 if (HAVE_LIBZ)
-    set (CMAKE_EXE_LINKER_FLAGS     "${CMAKE_EXE_LINKER_FLAGS} -lz")
-    set (CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -lz")
-    set (CMAKE_MODULE_LINKER_FLAGS  "${CMAKE_MODULE_LINKER_FLAGS} -lz")
+    set (GLOBAL_LINK_LIBRARIES ${GLOBAL_LINK_LIBRARIES} z)
 endif (HAVE_LIBZ)
 
 include (CMakeDetermineFortranCompiler)
@@ -35,9 +35,7 @@ include (CMakeDetermineFortranCompiler)
 if (CMAKE_Fortran_COMPILER)
     set (HAVE_FORTRAN   1)
     enable_language (Fortran)
-    set (CMAKE_EXE_LINKER_FLAGS     "${CMAKE_EXE_LINKER_FLAGS} -lgfortran")
-    set (CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -lgfortran")
-    set (CMAKE_MODULE_LINKER_FLAGS  "${CMAKE_MODULE_LINKER_FLAGS} -lgfortran")
+    set (GLOBAL_LINK_LIBRARIES ${GLOBAL_LINK_LIBRARIES} gfortran)
 endif (CMAKE_Fortran_COMPILER)
 
 # compiling section

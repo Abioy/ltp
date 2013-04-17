@@ -22,7 +22,10 @@ add_executable (ltp_test     ${ltp_test_SRC})
 add_executable (ltp_test_xml ${ltp_test_xml_SRC})
 add_executable (ltp_test2    ${ltp_test2_SRC})
 
+message (STATUS ${GLOBAL_LINK_LIBRARIES})
+
 target_link_libraries (ltp_test
+    ${GLOBAL_LINK_LIBRARIES}
     maxent
     crfpp
     util
@@ -35,7 +38,6 @@ target_link_libraries (ltp_test
     srl
     xml4nlp
     dl
-    pthread
     boost_regex)
 
 target_link_libraries (ltp_test2
@@ -51,8 +53,7 @@ target_link_libraries (ltp_test2
     srl
     xml4nlp
     dl
-    pthread
-    boost_regex)
+    boost_regex ${GLOBAL_LINK_LIBRARIES})
 
 target_link_libraries (ltp_test_xml
     maxent
@@ -67,8 +68,7 @@ target_link_libraries (ltp_test_xml
     srl
     xml4nlp
     dl
-    pthread
-    boost_regex)
+    boost_regex ${GLOBAL_LINK_LIBRARIES})
 
 #add_test (NAME ltp_test
 #    COMMAND "${CMAKE_COMMAND}"
