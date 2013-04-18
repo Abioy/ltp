@@ -1,40 +1,8 @@
-include (ConfigureChecks)
-
 # -----------------------------------------------
-# check section
+# config section
 # -----------------------------------------------
-
-check_function_exists (getopt_long HAVE_GETOPT_LONG)
-check_function_exists (getpagesize HAVE_GETPAGESIZE)
-check_function_exists (gettimeofday HAVE_GETTIMEOFDAY)
-
-check_include_file_concat ("ieeefp.h" HAVE_IEEEFP_H)
-check_include_file_concat ("inttypes.h" HAVE_INTTYPES_H)
-check_include_file_concat ("memory.h" HAVE_MEMORY_H)
-check_include_file_concat ("stdint.h" HAVE_STDINT_H)
-check_include_file_concat ("stdlib.h" HAVE_STDLIB_H)
-check_include_file_concat ("strings.h" HAVE_STRINGS_H)
-check_include_file_concat ("string.h" HAVE_STRING_H)
-check_include_file_concat ("sys/stat.h" HAVE_SYS_STAT_H)
-check_include_file_concat ("sys/types.h" HAVE_SYS_TYPES_H)
-check_include_file_concat ("unistd.h" HAVE_UNISTD_H)
-
-check_library_exists_concat ("gnugetopt" getopt HAVE_LIBGNUGETOPT)
-#check_library_exists_concat ("z" gzopen HAVE_LIBZ)
-message (STATUS "have libz " ${HAVE_LIBZ})
-
-if (NOT WINDOWS)
-    check_library_exists_concat ("m" random HAVE_LIBM)
-endif (NOT WINDOWS)
-
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
         ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
-
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_CONFIG_H")
-
-message (STATUS "cmake cxx flags "      ${CMAKE_CXX_FLAGS})
-message (STATUS "cmake linker flags "   ${CMAKE_EXE_LINKER_FLAGS})
-message (STATUS "global link flags "    ${GLOBAL_LINK_LIBRARIES})
 
 # -----------------------------------------------
 # compiling section
@@ -62,10 +30,10 @@ set (maxent_lib_SRC
     ${OPT_FILES})
 
 add_library (maxent_lib ${maxent_lib_SRC})
-target_link_libraries (maxent_lib ${GLOBAL_LINK_LIBRARIES})
 set_target_properties (maxent_lib PROPERTIES OUTPUT_NAME maxent)
 
 set (GETOPT_FILES "")
+
 if (WIN32 OR MINGW)
     set (GETOPT_FILES getopt.c getopt1.c)
 endif ()
@@ -78,7 +46,9 @@ set (maxent_exe_SRC
     ${GETOPT_FILES})
 
 add_executable (maxent_exe ${maxent_exe_SRC})
-target_link_libraries (maxent_exe maxent_lib ${GLOBAL_LINK_LIBRARIES})
+
+target_link_libraries (maxent_exe maxent_lib ${LINKER_LIBRARIES})
+
 set_target_properties (maxent_exe 
     PROPERTIES 
     OUTPUT_NAME maxent
